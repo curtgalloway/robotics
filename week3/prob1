@@ -1,0 +1,8 @@
+ Finding orientation from sensors (5/5 points)
+
+A flying robot is equipped with a triaxial accelerometer, triaxial magnetometer and triaxial gyroscope. We wish to determine its attitude in 3D.
+
+    At a particular point in time the readings of these sensors are given by the provided workspace variables a, b and omega respectively. Each of these is a 3-element vector corresponding to the sensor measurements in the x-, y- and z-directions.
+    Some relevant local parameters are provided in the workspace: the local magnetic field strength B, the local magnetic inclination I in degrees, and the local gravitational acceleration g.
+    Determine the roll, pitch and yaw of the robot and place the results, in units of degrees, in the workspace variables roll, pitch and yaw respectively.
+

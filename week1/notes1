@@ -1,0 +1,50 @@
+The first step is to create the SO(2) rotation matrix
+        
+    R1 = rot2(-50, 'deg');
+        
+and note the use of the 'deg' option to indicate that the angle is in units of degrees.  The Toolbox default is always radians.
+
+Next we create an SE(2) homogeneous transformation representing a pure translation and there's a couple of different ways we can do this
+
+	T1 = transl2(3, 4);
+        
+where the arguments are the x- and y-axis displacement, or
+        
+    T1 = se2(3, 4, 0);
+        
+where the arguments are as above, and the third argument is the rotation angle which is zero for the case of pure translation.
+        
+The next transformation is also an SE(2) homogeneous transformation and comprises translation and a rotation so we will use the se2 function
+       
+    T2 = se2(5, 6, -30, 'deg');
+        
+and note again the use of the 'deg' option.
+        
+Point A is given with respect to frame {0} and we wish to determine its position with respect to frame {2}.  This requires us to premultiply by the transform from frame {2} to frame {0}, which is the inverse of the transform from from {0} to {2} or T2.  When multiplying a point by an SE(2) matrix we must first convert the Euclidean point to homogeneous form by adding a third row that contains a one.  The result will also be homogeneous and must be converted back to a Euclidean coordinate by selecting the first two rows
+        
+    ph = inv(T2)*[PA_0; 1];
+    PA_2 = ph(1:2);
+
+An alternative approach is to use the Toolbox functions e2h() and h2e() which convert points from Euclidean to homogeneous form and the inverse respectively.
+        
+    PA_2 = h2e( inv(T2)* e2h(PA_0) );
+        
+The most concise way to transform points is to use the Toolbox function homtrans
+        
+    PA_2 = homtrans( inv(T2), PA_0);
+        
+Once again, see the help documentation for all the details.  A really handy feature of this function is that it can transform multiple points.  Each column of the second argument is considered to be a separate point.
+
+        To find the coordinate of point B with respect to frame {1} we need to first transform it from frame {2}, where it is defined, to frame {0} and then to frame {1}.  This requires us to premultiply by the inverse of the transform from frame {0} to {1} and then the transform from {0} to {2}
+
+    ph = inv(T1)*T2*[PB_2; 1];
+    PB_1 = ph(1:2);
+        
+To determine the distance between two points they must be defined with respect to the same coordinate frame.  The particular frame doesn't matter, as long as they are the same.  Convince yourself that this is the case.  We will choose to work in frame {0} where point A is already defined.  So the first step is to transform point B to frame {0}
+
+    ph = T2*[PB_2;1];
+    PB_0 = ph(1:2);
+        
+and then we can compute the distance using MATLAB's builtin norm function, check the documentation on how that works
+        
+    D_AB = norm(PB_0 - PA_0);

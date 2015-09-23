@@ -1,0 +1,18 @@
+First we need to transform each of the vertices (corner points) which are given by the columns of V so as to be relative to frame {C}.  This requires premultiplication by the inverse of the relative pose of C, which we can achieve conveniently using the Toolbox function homtrans
+    VC = homtrans(inv(C), V);
+    
+Now we are ready to plot the cube from the new viewpoint.  First we clear the figure and turn on hold mode so the edges all appear on the same plot
+
+  clf
+  hold on
+
+Then for each edge we find the index of the start (s) and end (e) vertex.  Note this usage of a MATLAB for loop, in this case edge is set to consecutive columns of the matrix edges, very simply stepping through each edge.  The arguments to plot3() are three vectors containing: the start and end x-coordinate, the start and end y-coordinate and the start and end z-coordinate.  The final argument 'k' draws the lines in black but that's just my preference, they can be any color you want.
+    
+  for edge=edges
+    s = edge(1); e = edge(2);
+    plot3( [VC(1,s) VC(1,e)], [VC(2,s) VC(2,e)], [VC(3,s) VC(3,e)], 'k' );
+  end
+    
+Finally we can ensure that the axis scaling is equal in all direcitons so that the cube looks like a cube.
+    
+  axis equal
