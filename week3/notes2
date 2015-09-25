@@ -1,0 +1,17 @@
+The first step is to determine rate of change of the rotation matrix 
+        
+		Rdot = skew(omega) * R
+
+The next part of the problem requires us to approximately estimate the future value of the rotation matrix through rectangular integration
+        
+        R_T = R + 0.050 * Rdot;
+        
+but now the matrix R_T is not a proper orthogonal matrix so we need to normalise it
+        
+        R_T = trnorm(R_T);
+
+To find the roll-pitch-yaw angles is simply
+        
+        RPY_T = tr2rpy(R_T,'deg')
+        
+and that's it!

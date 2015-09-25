@@ -1,0 +1,7 @@
+The design of a small new planar robot is shown in the Figure above, along with its dimensions in units of centimetres
+
+The robot is shown in its zero angle configuration and the direction of positive angular increase is indicated.
+
+We wish to know the position of the end-effector and its orientation when the robot joint angles are as given by elements of the workspace vector q in units of degrees. Return the x-coordinate of the end-effector in the workspace variable x in metres, the y-coordinate of the end-effector iny in metres, and the orientation in degrees in the workspace variable theta.
+
+Hint: if you find that the MATLAB statement is getting really long you can continue it on the next line. Unlike most other programming languages you need to explicitly indicate that the statement continues on to the next line by appending " ..." to the line. That is, a space followed by 3 dots. 

@@ -1,0 +1,10 @@
+ Integrating rotational motion (5/5 points)
+
+We will look now at how to compute the future orientation of the robot using information from its gyroscopes.
+
+    The current orientation of the flying robot is given by the workspace variable R.
+    First we will compute the derivative of the rotation matrix, R˙, based on gyroscope data and the current orientation, and save the result in the workspace variable Rdot.
+    The orientation at a future time is given approximately by RT≈R0+TR˙ where T is the time into the future, R is the current rotation matrix and R˙ is the time derivative computed above.
+    Now the sum of an orthonormal matrix and another matrix is not an orthonormal matrix, but if the added term is small then it will be "close" and we can use a Toolbox function trnorm to "fix it up", that is, to ensure that the columns are all unit length and orthogonal (check the help documentation for this function). This process is known as normalization.
+    Compute the normalized rotation matrix at a time of 50 ms into the future and store the roll-pitch-yaw angles, in degrees, in the workspace variable RPY_T.
+
