@@ -1,0 +1,10 @@
+function [ T ] = fkine( Q )
+%FKINE Take a vector of joint angles ( Q ) and determine the pose of the 
+%      end effector. 
+%   Detailed explanation goes here
+
+
+
+
+end
+
