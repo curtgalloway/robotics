@@ -24,11 +24,13 @@ for i=1:npoints
     Ji = [ -qi(2)*sin(qi(1)) + (-a1-a2)*cos(qi(1)),cos(qi(1)) ;
            -(a1+a2)*sin(qi(1)) + qi(2)*cos(qi(1)),sin(qi(1)) ] ;
  
-    Pcurrent=[ qi(2)*cos(qi(1)) - a2*sin(qi(1)) - a1*sin(qi(1)),  a1*cos(qi(1)) + a2*cos(qi(1)) + qi(2)*sin(qi(1)) ];    
-    timeleft=(time-(dt*i));
-    if timeleft~=0
-        v1=(Pgoal - Pcurrent)/timeleft;
-    end
+    %%This next recalculates velocity - it was marked wrong during the course. 
+    %%So I have it commented out here. 
+    %Pcurrent=[ qi(2)*cos(qi(1)) - a2*sin(qi(1)) - a1*sin(qi(1)),  a1*cos(qi(1)) + a2*cos(qi(1)) + qi(2)*sin(qi(1)) ];    
+    %timeleft=(time-(dt*i));
+    %if timeleft~=0
+    %    v1=(Pgoal - Pcurrent)/timeleft;
+    %end
     qtraj(i,:)=qi;
 end
     
