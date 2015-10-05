@@ -3,6 +3,7 @@ PA_0 = [6.5; 4.3];  % point A with respect to {0}
 PB_2 = [1.2; -2.7];  % point B with respect to {2}
 
 % Modify the following lines to return the correct values
+
 R1 = rot2(-50,'deg')
 T1 = transl2(3,4)
 T2 = se2(5,6,-30,'deg')
