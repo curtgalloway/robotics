@@ -1,0 +1,31 @@
+How to construct robot with prismatic joins
+
+Hello!
+
+#SerialLink
+
+Some observations how to do it using toolkit.
+
+L(1) = Link([0 0 1 0 0 pi/2]);
+L(2) = Link([0 0 0 0 1 0]);
+L(2).qlim = [0,5];
+twolink = SerialLink(L, 'name', 'two link');
+twolink.plotopt = {'workspace', [-5 5 -5 5 -5 5]};
+%twolink.plot([0 1]);
+twolink.teach();
+
+Here's robot with Revolute (1) and Prismatic (2) joints.
+
+dh parameters for joint:
+
+[theta d a alpha type offset]
+
+type - 0 for Revolute, 1 for Prismatic (optional if all your joints are Revolute).
+
+offset - if you want "pre-rotate" Revolute joint (theta) or "pre-move" prismatic joint (d) (optional).
+
+qlim is required for Prismatic joint if you would like to "plot" it or "teach" it.
+
+plotopt 'workspace' option is required for SerialLink with Prismatic joints if you would like to "plot" of "teach" it.
+
+workspace is x,y and z minimum/maximum axis limits for plotting robot using teach() or plot().
