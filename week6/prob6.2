@@ -1,0 +1,11 @@
+ Puma 560 robot with payload (6 points possible)
+
+As part of a new installation a refurbished Puma 560 robot will be used to move a heavy payload from location A, which is close to the robot, to a conveyor belt located some distance from the robot. A likely problem is the high gravity load on the robot's joints as it stretches out toward the conveyor. We need to determine how close the conveyor belt must be to the robot. A model of the robot is provided in the workspace variable p560.
+
+The payload has a mass of 5kg and is held by the robot gripper such that its centre of gravity is 15cm away from the end-effector coordinate frame in its z-direction. You will need to use the payload method of the robot object to add the payload.
+
+The payload is picked up from the location (0.4, 0.2, 0) in the base coordinate frame and the tool is oriented in such a way that the end-effector's z-axis points in the direction of the world x-axis and its x-axis points downward.
+
+The maximum magnitude of the joint torques for the first three joints of the robot are given by the workspace variable maxTorque.
+
+To determine where the conveyor belt can be placed we will move the end-effector in its z-direction in 2cm steps and find the furthest point such that the gravity load on any of the first three joints does not exceed the given limits. Return the x-coordinate of this end-effector pose in the workspace variable maxX.

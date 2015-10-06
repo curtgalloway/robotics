@@ -1,0 +1,14 @@
+ Drawing a line in 3D with a 6-axis robot (5 points possible)
+
+A venerable Puma 560 robot is being used to draw lines on a vertical surface. The robot's tool should lie in the horizontal plane, parallel to the x-axis with the tool's y-axis parallel to the world y-axis.
+
+A model of the Puma 560 robot is provided in the workspace variable p560, and the initial and final points of a line segment to be drawn are given by the workspace variables P1 and P2.
+
+Use resolved-rate motion control to move between the points. The trajectory has npoints points and is updated every dt seconds. Place the joint angle trajectory into the workspace variable qtraj as a matrix with npoints rows and 6 columns.
+
+At each timestep, from 1 to npoints, compute the joint coordinates that the robot must move to using the resolved-rate motion control algorithm. That is:
+
+    The first point in the trajectory is not equal to P1, but is the first small step on the path toward the goal.
+    The last point in the trajectory corresponds to the goal P2.
+
+The robot passes very close to a wrist singularity. Examine the Jacobian matrix at each step, determine which step of the trajectory has the highest condition number and record this in the workspace variable nearsingular.

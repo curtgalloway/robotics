@@ -1,0 +1,7 @@
+%% DO NOT EDIT BELOW THIS LINE
+mdl_puma560
+torqueMax = [50 90 45];
+    
+%% YOUR ANSWERS BELOW THIS LINE
+
+maxX = 

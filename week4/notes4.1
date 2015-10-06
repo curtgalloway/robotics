@@ -1,0 +1,70 @@
+The main part of this problem is to solve for the inverse kinematics. We start by writing the forward kinematics as R(q1) Ty(a1) Tx(q2) Ty(a2). In MATLAB we can create some symbolic variables and multiply this out using the Toolbox
+
+        >> syms q1 q2 a1 a2
+ 
+        >> T = trot2(q1)*transl2(q2,a1)*transl2(0,a2);
+
+or we could use 
+
+        >> T = trchain2('R(q1) Ty(a1) Tx(q2) Ty(a2)', [q1 q2])
+
+which is perhaps a bit closer to the expression we first wrote down.
+
+The end-effector position is given by two elements of this SE(2) matrix
+
+        >> x = T(1,3)
+        x =
+        q2*cos(q1) - a2*sin(q1) - a1*sin(q1)
+ 
+        >> y = T(2,3)
+        y =
+        a1*cos(q1) + a2*cos(q1) + q2*sin(q1)
+
+
+A useful trick in inverse kinematics is to square and add equations.  In this case
+
+        >> x^2+y^2
+        ans =
+        (a1*cos(q1) + a2*cos(q1) + q2*sin(q1))^2 + (a1*sin(q1) + a2*sin(q1) - q2*cos(q1))^2
+ 
+        >> simplify(ans)
+        ans =
+        a1^2 + 2*a1*a2 + a2^2 + q2^2
+
+which is equal to x^2+y^2 so we can solve for q2 in terms of x and y.  Note that we can simplify this expression by introducing (a1+a2)^2.
+
+        q2 = sqrt(x^2+y^2 - (a1+a2)^2);
+
+q1 does not come quite so easily.  I did it by isolating cos(q1) in the expression for x, substituting that into the expression for y, and getting an expression for sin(q1).  Then I isolated sin(q1) in the expression for x and substituted that into the expression for y, and getting an expression for cos(q1).  Now the ratio of these two expressions is tan(q1), and we can use the atan2 function to compute the inverse tangent
+
+        q1 = atan2(y*q2-(a1+a2)*x, (a1+a2)*y+q2*x);
+
+Now that is out of the way we can look at the first part of the problem which is to solve the inverse kinematics for point PA
+
+        x = P1(1); y = P1(2);
+        q2 = sqrt(x^2+y^2 - (a1+a2)^2);
+        q1 = atan2(y*q2-(a1+a2)*x, (a1+a2)*y+q2*x);
+        q = [q1 q2];
+
+The second part of the problem is to determine if a set of points are reachable.  We first create an empty logical vector for the result, it has zero columns and zero rows (in MATLAB [] means an empty matrix)
+
+        reachable = logical([]);
+
+Then we use the MATLAB for loop to step through each column of the matrix Points, setting the variable P to each column in turn.
+
+        for P=Points
+            x = P(1); y = P(2);
+            q2 = sqrt(x^2+y^2 - (a1+a2)^2);
+            reachable = [ reachable q2 > q2_min && q2 < q2_max];
+        end
+
+We only need to compute q2 and test it against the given limits, and we append the result of that comparison to the vector reachable.
+
+We could also write this using an index 
+
+        for i=1:numcols(Points)
+            x = Points(1,i); y = Points(2,i);
+            q2 = sqrt(x^2+y^2 - (a1+a2)^2);
+            reachable(i) = q2 > q2_min && q2 < q2_max;
+  end
+      

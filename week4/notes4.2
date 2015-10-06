@@ -1,0 +1,24 @@
+I assume that you have working inverse kinematics from the first problem.  We are required to have a straight line path which means Cartesian interpolated motion.  The first step then is to linearly interpolate between P0 and P1 in 20 steps, and we can use the Toolbox function ctraj to do that
+
+	Ptraj = ctraj(transl(P0(1),P0(2),0), transl(P1(1),P1(2),0), 20);
+        p1 = Ptraj(1,4,:);
+        p2 = Ptraj(2,4,:);
+        Ptraj = [p1(:) p2(:)];
+
+which is a 20x2 matrix, each row is an interpolated value, the first row is P0 and the last row is P1.
+
+Next we set the result vector to be an empty vector
+
+        qtraj = [];
+
+Now we want to step through the rows of Ptraj from above, so we transpose the matrix and then we use the MATLAB for-loop trick to step through the columns
+
+        for P=Ptraj'
+          x = P(1); y = P(2);
+          q2 = sqrt(x^2+y^2 - (a1+a2)^2);
+          q1 = atan2(y*q2-(a1+a2)*x, (a1+a2)*y+q2*x);
+          qtraj = [qtraj;[q1 q2]];
+        end
+
+and for each world point use the inverse kinematics to determine q1 and q2 and we stack them one above the other and append them to the result vector qtraj.
+      

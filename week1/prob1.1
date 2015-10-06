@@ -1,0 +1,24 @@
+ Experiment with transforms using MATLAB (10/10 points)
+
+We will use MATLAB and some functions from the Robotics Toolbox to consolidate our knowledge about 2-dimensional rotation matrices and homogeneous transform matrices.
+
+This assignment will also be a gentle introduction to the way all the programming assignments in this course will run, and how they are automatically graded. We will do some simple computations in MATLAB and you will assign the results to workspace variables which will then be checked for correctness.
+
+    Compute an SO(2) rotation matrix that corresponds to a rotation of -50 degrees and place the result in the workspace variable R1.
+    Compute an SE(2) homogenous transformation matrix that corresponds to a translation of 4 in the y-direction and 3 in the x-direction. Place the result in the workspace variable T1.
+    Compute an SE(2) homogenous transformation matrix that corresponds to a translation of 5 in the x-direction and 6 in the y-direction and then a rotation of -30 degrees. Place the result in the workspace variable T2.
+    Consider now that T2 represents the pose of the coordinate frame {2}. The coordinate of point A in the world {0} coordinate frame is given by the workspace variable PA_0. Determine the coordinate of the point with respect to frame {2} and place the result in the workspace variable PA_2.
+    Consider now that T1 represents the pose of the coordinate frame {1}. The coordinate of point B with respect to frame {2} is given by the workspace variable PB_2. Determine the coordinate of point B with respect to the coordinate frame {1}, and place the result in the workspace variable PB_1.
+    Determine the Euclidean distance between point A and point B and place the result in the workspace variable D_AB.
+
+Hint: the Toolbox functions rot2, transl2, se2, homtrans might be helpful for you. Check out their documentation.
+
+Once you've completed the problem, I hope correctly, check out my solution by pressing the Show Answer button. You might learn some shortcut ways of doing things with the Toolbox. As always, if functions are used in code which you don't understand look them up using MATLAB's inbuilt help functions. To get quick help in the command console I use
+
+>> help function
+
+and to bring up the documentation browser
+
+>> doc function
+
+which can be handy to have open on your desktop, particularly while you are learning. 

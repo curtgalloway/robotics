@@ -1,0 +1,18 @@
+Although this problem sounds complex, using a 20-joint robot it is easy to solve.  We start by computing the Jacobian matrix in the world-coordinate frame for this robot, at the configuration given by the provided joint angle vector
+
+	J = h3d.jacob0(q);
+
+This Jacobian matrix is 6x20 and maps the joint velocities to the end-effector spatial velocity.  Our problem requires us to do the opposite but  we cannot invert the Jacobian because it is not square.  However in this case we can use the pseudo-inverse function
+
+	qd = pinv(J) * V;
+
+We can check that this has done the right thing by mapping these joint angle rates to the end-effector velocity
+
+	J*qd
+
+and it is indeed the same as the required end
+
+-effector spatial velocity V.
+      
+
+

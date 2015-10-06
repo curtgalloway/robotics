@@ -1,0 +1,30 @@
+The first thing we do is to compute the Jacobian matrix in the world-coordinate frame for this robot, at the configuration given by the provided joint angle vector, which we need to convert from degrees to radians
+
+	J = px.jacob0( q * pi/180);
+
+This Jacobian matrix is 6x4 and maps the joint velocities to the end-effector spatial velocity.  Our problem requires us to do the opposite but  we cannot invert the Jacobian because it is not square.
+
+The clue to this is the part of the questions that refers to the Cartesian directions we wish to control.  These correspond to rows 1, 2, 3 and 5 of the Jacobian.  So we create a modified Jacobian with just these rows, and a corresponding modified end-effector velocity
+ 
+	Jm = J([1 2 3 5], :);
+	Vm = V([1 2 3 5]);
+ 
+The modified Jacobian is square so we can invert it and map the specified end-effector velocities to joint angle rates
+
+	qd = inv(Jm) * Vm
+
+We can check that this has done the right thing by mapping these joint angle rates to the subset of end-effector velocities
+
+	Jm*qd
+
+If we use the original Jacobian matrix
+
+	J*qd
+
+we see that there is some non-zero end-effector velocity associated with rotation about the z-axis.  This "incidental" motion cannot be set to zero, it is a consequence of using an underactuated robot.
+
+You could also use the pseudo-inverse function pinv
+
+	qd = pinv(J) * V
+
+but it gives slightly inaccurate results.

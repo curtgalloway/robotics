@@ -1,0 +1,36 @@
+The first thing we will do is add the payload to the robot model. We use the payload method.  The first argument is the mass of the payload and the second is a vector describing the position of the payload's centre of mass with respect to the end-effector coordinate frame
+
+	p560.payload(5, [0 0 0.15]);
+
+Next we need to determine the pose of the robot's end effector at location A, the starting point. We are told that the tool is oriented such that the end-effector's z-axis points in the direction of the world x-axis, which means that the approach vector is
+
+	A = [1 0 0];
+
+If the x-axis is downward (N vector) then the O vector must point in the world y-direction
+
+	O = [0 1 0];
+
+So the pose is
+ 
+	TA = transl(0.4, 0.2, 0)*oa2tr(O, A);
+
+Now we create a loop to perform inverse kinematics, and use the resulting joint angles to determine the gravity load. We test the absolute value of the gravity load against the given limits and if exceeded we break out of the testing loop. Otherwise we move the robot 2cm in the end-effector z-direction and repeat
+
+	while 1
+		q = p560.ikine6s(TA);
+		g = p560.gravload(q)
+    
+		if any(abs(g(1:3)) > torqueMax)
+			break
+		end
+ 
+		TA = TA * transl([0 0 0.02]); 
+	end
+
+TA is the current end-effector position, but the problem asks for the end-effector x-coordinate which is given by the first element of the translation vector
+
+	t = transl(T);
+
+When we exit the loop we are at a position where the joint torque limits are exceeded. The problem asks for the maximum extension at which they are not exceeded so we need to move back in 2cm.
+
+	maxX = t(1)-0.02        

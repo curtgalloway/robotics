@@ -1,0 +1,53 @@
+The simplest way to set the robot's tool orientation is to think in terms of O and A vectors, parallel to the y- and z-axis respectively.  From the problem statement we can write
+
+	O = [0 1 0];
+	A = [1 0 0];
+
+and the rotation matrix is
+ 
+	R = oa2tr(O, A);
+
+Now we need to describe the end-effector pose at each of the two points, and we compose the position and rotation
+
+	T1 = transl(P1) * R;
+	T2 = transl(P2) * R;
+
+and now we find the robot joint angles needed to achieve the two end-effector poses using inverse kinematics
+
+	q1 = p560.ikine6s(T1);
+	q2 = p560.ikine6s(T2);
+ 
+Now we are ready to implement the resolved-rate motion control.  Firstly we determine the end-effector velocity, which is the distance to travel divided by the total time
+
+	v = [P2-P1; 0; 0 ;0] / (npoints*dt);
+
+We will create empty arrays to hold the joint angle trajectory (which is to be returned as part of the solution) and also the Jacobian condition number
+
+    qtraj = [];
+    c  = [];
+
+Now we initialise the joint angles to their initial value
+
+	q = q1;
+
+and for each step on the trajectory, compute the joint angle velocity required to achieve the desired end-effector velocity, and integrate that over the time interval and update the joint angles.
+
+    for i = 1:npoints
+        J = p560.jacob0(q);
+        dq = inv(J) * v;
+        q = q + dt*dq';
+        qtraj = [qtraj; q];
+        c = [c; cond( J )];
+    end
+
+We also record the condition number of the Jacobian at each step, this is a large number when the robot is close to singularity.
+
+Before we find the location of the largest element we need to make a small adjustment.  The first element of qtraj corresponds to the first step on the path beyond P1, note that q is updated before we put it in the matrix qtraj (just as the question asked).  However the first element of c corresponds to the condition number of the Jacobian computed for joint angles q1, ie. at P1.  These arrays are therefore not aligned, so we will remove the first element of c
+
+	c = c(2:end);
+
+And now determine the location of the maximum value of c
+
+	[~,nearsingular] = max(c);
+
+This notation means return only the second value of the max function, the location of the maximum rather than the maximum itself.

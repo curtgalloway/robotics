@@ -1,0 +1,32 @@
+First we need to compute the rotation matrix from the data provided
+        R = rot2(theta, 'deg');
+
+Then we rotate each of the corner points which are given by the columns of V by the rotation
+    for i=1:4
+        Vrot(:,i) = R * V(:,i);
+    end
+    
+A helpful shorthand is to use the Toolbox function homtrans, check out the documentation, which works like this
+    
+    Vrot = homtrans(R, V);
+  
+Now we need to create the plot.  We could do this with very specific code like
+    hold on
+	plot( Vrot(1,[1 2]), Vrot(2,[1 2]) );
+	plot( Vrot(1,[2 3]), Vrot(2,[2 3]) );
+	plot( Vrot(1,[3 4]), Vrot(2,[3 4]) );
+	plot( Vrot(1,[4 1]), Vrot(2,[4 1]) );
+    
+the first argument to plot is a vector of the first and last x-coordinate of a segment, and the second argument is a vector of the first and last y-coordinate of a segment.  Vrot(1,[1 2]) means take the first row (all the x-coordinates are on the first row) and columns 1 and 2, which is the same as writing [Vrot(1,1) Vrot(1,2)].
+    
+Or we could do it more generally using a loop
+    	hold on
+        for j=0:3
+            first = j+1;  % first point on the edge
+            last = rem(j+1, 4) + 1;  % second point on the edge
+            plot( [Vrot(1,first) Vrot(1,last)], [Vrot(2,first) Vrot(2,last)]);
+        end
+    
+If you're not familar with the function rem check out the help documentation on it, and figure out how the indices first and last are computed.
+    
+

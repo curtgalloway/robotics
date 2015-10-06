@@ -1,0 +1,17 @@
+The first step is to determine the roll and pitch angles using accelerometer data
+        
+        roll = atan( a(2) / a(3) ) * 180/pi;
+        pitch = asin(-a(1) / g) * 180/pi;
+
+note that we have converted the results from radians to degrees.  Alternatively we could use the MATLAB function asind() and atand() which returns the value directly in degrees.       
+
+The next step is to find the yaw (or heading) angle using magnetometer data and the roll and pitch data from above.
+        
+        yaw = atand( cosd(pitch) * (b(3)*sind(roll) - b(2)*cosd(roll)) / (b(1) + B*sind(I) *sind(pitch)) );       
+
+and this time all the trigonometric functions we've used have the 'd' suffix which means they accept or return angles in degrees, since we already computed roll and pitch in degrees.
+        
+Note: we have used the function atand() which returns angles only between -90 and +90 degrees.  Heading angles outside this range are possible but will not be correctly computed.  We will visit this topic in a different context in Lecture 7, but if you are interested have a look at the MATLAB function atan2d.
+        
+Equations like these are embedded in flight control systems from simple hobby quadrotors to passenger aircraft
+

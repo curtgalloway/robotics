@@ -1,0 +1,32 @@
+The first step is to compute the joint angle trajectory over 100 steps
+        
+	qtraj = jtraj(qa, qb, 100);
+ 
+Then we need to collect joint 2 gravity and inertia values at each step so we will initialise a couple of empty matrices
+
+	g2 = [];
+	I2 = [];
+
+Then for every row of the trajectory we compute the gravity torque which is a 6-vector and append the second element to the vector g2. Similarly we compute the inertia matrix which is a 6x6 matrix and append the joint 2 inertia, element (2,2), to the vector I2.
+
+	for q=qtraj'
+		g = p560.gravload(q');
+		g2 = [g2 g(2)];
+
+		I = p560.inertia(q');
+		I2 = [I2 I(2,2)];
+	end
+
+Now we need to find the maximum absolute value.  First we find the index of the largest absolute value, and use that to index into the orginal vector.  This handles the case that the largest magnitude element is actually negative.
+
+	[~,k] = max(abs(g2));
+	taug2max = g2(k);
+ 
+Finally we find the minimum and maximum values of joint 2 inertia
+        
+	I2min = min(I2);
+	I2max = max(I2);
+
+and compute the ratio
+
+	I2ratio = I2max/I2min;

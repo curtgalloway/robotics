@@ -1,0 +1,74 @@
+The first thing is to determine the Jacobian matrix for the robot.  In the first problem this week we determined the forward kinematics which we wrote  as R(q1) Ty(a1) Tx(q2) Ty(a2).  In MATLAB we can create some symbolic variables and multiply this out using the Toolbox
+        
+        >> syms q1 q2 a1 a2
+        
+        >> T = trot2(q1)*transl2(q2,a1)*transl2(0,a2);
+
+or we could use 
+        
+        >> T = trchain2('R(q1) Ty(a1) Tx(q2) Ty(a2)', [q1 q2])
+
+which is perhaps a bit closer to the expression we first wrote down.
+
+The end-effector position is given by two elements of this SE(2) matrix
+        
+        >> x = T(1,3)
+        x =
+        q2*cos(q1) - a2*sin(q1) - a1*sin(q1)
+        >> y = T(2,3)
+        y =
+        a1*cos(q1) + a2*cos(q1) + q2*sin(q1)
+
+Now the Jacobian is the derivative of x and y with respect to q1 and q2, in MATLAB
+        
+        >> jacobian([x y], [q1 q2]);
+        >> simplify(ans)
+        ans =
+        
+        [ - a1*cos(q1) - a2*cos(q1) - q2*sin(q1), cos(q1)]
+        [   q2*cos(q1) - a2*sin(q1) - a1*sin(q1), sin(q1)]
+
+The first part of the problem is to compute the Jacobian for the joint configuration q0, so we simply convert the expression above to more regular MATLAB syntax
+        
+        q1 = q0(1); q2 = q0(2);
+        J0 = [
+        	- a1*cos(q1) - a2*cos(q1) - q2*sin(q1), cos(q1)
+        	q2*cos(q1) - a2*sin(q1) - a1*sin(q1), sin(q1)
+        ];
+
+The second part of the problem is the resolved-rate motion control.
+
+We create an empty vector to hold the return value, the matrix of joint configurations
+        
+        qtraj = [];
+
+Then we need to determine the initial end-effector position, and since we are given the initial joint configuration we need to apply the forward kinematics
+        
+        q1 = q0(1); q2 = q0(2);
+        P0 = [q2*cos(q1) - a2*sin(q1) - a1*sin(q1), a1*cos(q1) + a2*cos(q1) + q2*sin(q1)];
+
+The end-effector velocity required for this motion is the total distance to be travelled (Pgoal-P0) divided by the total time of the motion (npoints*dt)
+        
+        velocity = (Pgoal - P0)/(npoints*dt);
+
+The current configuration of the robot is (q1,q2) and we are interested in the next configuration.  We compute the Jacobian based on the current configuration, and use the inverse Jacobian to map the end-effector velocity from above to joint velocity qd.  The joint coordinate change over the interval is dt*qd and we use this to update the two joint coordinates, which we save away in a column of the matrix qtraj.  Then we repeat the process.
+        
+        for i=1:npoints
+        
+        	% Jacobian
+        	J = [
+        	- a1*cos(q1) - a2*cos(q1) - q2*sin(q1), cos(q1)
+        	q2*cos(q1) - a2*sin(q1) - a1*sin(q1), sin(q1)
+        	];
+
+        	% compute the joint velocity
+    		qd = inv(J) * velocity';
+
+        	% update the joint coordinates
+    		q1 = q1 + dt*qd(1);
+    		q2 = q2 + dt*qd(2);
+
+        	% save the joint coordinates to the right of qtraj
+    		qtraj = [qtraj; [q1 q2]]
+        
+		end

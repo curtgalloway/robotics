@@ -1,0 +1,29 @@
+The result does not depend on translation between the frames or the position of the point, so ignore that information.  We first compute the orientation of frame {B} with respect to frame {A}
+
+	R = T(1:3,1:3);
+
+or we could use the Toolbox function
+
+	R = t2r(T)
+
+and then create a block diagonal matrix as per (8.4) of the textbook, the MATLAB blkdiag function is a quick way to do this
+
+	J = blkdiag(R', R');
+
+and note that we have used the inverse of R here, the rotation from frame {B} to frame {A}.
+
+This Jacobian maps velocity from frame {A} to frame {B}, we want the opposite so we invert the Jacobian before multiplying by the spatial velocity vector
+
+	VA = inv(J) * [VB; 0; 0; 0]; 
+
+Note that we've added three extra zeros to the spatial velocity because it must be a 6-vector and the translational velocity is only a 3-vector.  A point cannot have an angular velocity, so that is therefore equal to zero.
+
+The result is a 6-vector but the question calls for only the translational velocity so we take the first 3 elements of the just computed spatial velocity
+
+	VA = VA(1:3)
+
+In solving this simple problem we have tackled it in a very general, and non-optimal way.  The same answer could be obtained by
+
+	VA = R*VB
+
+Try to convince yourself that this is so.

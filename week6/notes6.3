@@ -1,0 +1,93 @@
+We define three Euler angles, I'll call them a, b and c, that are functions of time which I denote by t.
+
+	syms a(t) b(t) c(t)
+
+In MATLAB these are objects of symfun type. We compute the rotation matrix based on the Euler angles in the conventional way
+
+	R = eul2r(a, b, c);
+
+since this function can accept symbolic as well as numeric arguments
+
+Now we differentiate the rotation matrix with respect to t and post multiply by the transpose (inverse) of the rotation matrix.  Note that we transpose the matrix using the .' (dot quote) operator rather than just ' (quote). The first operator is the non-conjugate transpose, where the second is the conjugate (Hermitian) transpose.  For real valued numeric matrices there is no difference, but it is important to be specific for symbolic matrices.
+
+  w = diff(R, t) * R.';
+
+The result is a skew-symmetric matrix and we extract the three unique elements into a vector
+
+	v = vex( w(t) );
+
+Note the argument is given as w(t), that's because w is a symfun type and this notation converts it to 3x3 sym type matrix. The expressions are complex and trigonometric so we'll try to simplify them
+
+	v = simplify(v)
+
+	v =
+ 
+	 D(c)(t)*cos(a(t))*sin(b(t)) - D(b)(t)*sin(a(t))
+	 D(b)(t)*cos(a(t)) + D(c)(t)*sin(a(t))*sin(b(t))
+	                     D(a)(t) + cos(b(t))*D(c)(t)
+
+which is now quite compact. Note that D(.) is a derivative operator so D(a)(t) means da/dt. Note that MATLAB 2015a (on which the grading server is built) now represents the derivative operators as diff(a(t), t) for da/dt.
+ 
+For each row we need to find the coefficients of da/dt, db/dt and dc/dt and these become the respective columns of the 3x3 Jacobian matrix. The hard work has now been done and we could write down the Jacobian matrix by inspection.
+
+But let's try to get MATLAB to do it for us anyway.
+
+We create an empty symbolic matrix 
+
+	Je = sym([]);
+
+Then for each row i, we find the coefficient of the derivatives, in turn of a(t), b(t) and c(t). If the return vector has a single element it means that the derivative does not appear, and if the return vector has two elements then second element is the coefficient of the derivative. We place the coefficients into the appropriate elements of the Jacobian matrix.  This part is rather involved but does show the power of MATLAB's symbolic manipulation capability.
+
+	for i = 1:3
+        
+		C = coeffs( v(i), 'D(a)(t)' );
+		if length(C) == 1
+			Je(i,1) = 0;
+		else
+			Je(i,1) = C(2);
+		end
+
+		C = coeffs( v(i), 'D(b)(t)' );
+		if length(C) == 1
+			Je(i,2) = 0;
+		else
+			Je(i,2) = C(2);
+		end
+
+		C = coeffs( v(i), 'D(c)(t)' );
+		if length(C) == 1
+			Je(i,3) = 0;
+		else
+			Je(i,3) = C(2);
+		end
+        
+	end
+
+Note that MATLAB 2015a (on which the grading server is built) now represents the derivative operators as diff(a(t), t) and as such the coeffs functions in the for loop above needs to be altered to accommodate this. Simply replace ‘D(a)(t)’ with ‘diff(a(t), t)’ and so on for b and c.
+
+We can now return the Jacobian
+
+	Je = 
+
+	[ 0, -sin(a(t)), cos(a(t))*sin(b(t))]
+	[ 0, cos(a(t)), sin(a(t))*sin(b(t))]
+	[ 1, 0, cos(b(t))]
+
+We can perform the whole process online by substituting in the Euler angles and evaluating to find Je
+
+    Je = eval(subs(Je,{a(t),b(t),c(t)},eul))
+
+Or the expression for Je can now be entered manually
+    
+    a = eul(1); b = eul(2); c = eul(3);
+
+	Je = [
+		0, -sin(a), cos(a)*sin(b)
+		0, cos(a), sin(a)*sin(b)
+		1, 0, cos(b)
+		];
+ 
+Finally, euldot can now be calculated
+
+    euldot = inv(Je) * omega;
+      

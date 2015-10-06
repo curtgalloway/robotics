@@ -1,0 +1,10 @@
+Consider the two-link planar revolute-prismatic robot arm from the previous problems, and shown above for convenience. We wish to develop a resolved-rate motion controller that will lead to approximately straight line motion between two points.
+
+    The dimensions of the robot are given by the workspace variables a1 and a2. We wish to move the end-effector in an approximately straight line from the initial joint configuration q0 to the end-effector coordinate Pgoal. There are no limits on the possible values of the joint coordinates.
+    As part of the solution you must determine an expression for the Jacobian matrix for this robot. To test your Jacobian matrix, evaluate it for the joint configuration q0 and place it in the workspace variable J0.
+    The motion will take npoints time steps each of dt seconds.
+    At each timestep, from 1 to npoints, compute the joint coordinates that the robot must move to using the resolved-rate motion control algorithm. That is:
+        The first point in the trajectory is not equal to q0, but is the first small step on the path toward the goal.
+        The last point in the trajectory corresponds to the goal Pgoal.
+    Save the trajectory points as a matrix in the workspace variable qtraj that has npoints rows and 2 columns. The columns will correspond to joint 1 and joint 2 coordinates respectively, and the rows are the time steps from first to last.
+

@@ -1,0 +1,20 @@
+The pose of the end-effector is given by the following sequence of elementary transformation
+        
+    T = trot2(q(1), 'deg') * transl2(9.0,3.0) * trot2(q(2), 'deg') * ...
+    transl2(7.0,0) * trot2(q(3), 'deg') * transl2(5.1,-3);
+
+and note that all the lengths are expressed here in units of centimetres.
+        
+The x-coordinate is obtained from element (1,3) and we must convert it from units of centimetres to metres.  Alternatively we could have entered the lengths above in metres not centimetres
+        
+    x = T(1,3) * 0.01; 
+        
+and similarly for the y-coordinate
+        
+    y = T(2,3) * 0.01; 
+        
+The orientation angle can be found by examining elements of the rotation submatrix, element (1,1) is equal to cos(theta) therefore
+        
+    theta = acos( T(1,1) ) * 180/pi;
+
+and note we've converted it to degrees as the problem dictated.  We could also have used the function acosd().

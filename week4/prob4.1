@@ -1,0 +1,9 @@
+Consider a robot arm as shown above that has one revolute joint and one prismatic joint.
+
+    Determine the inverse kinematics for this robot. The following identities may be helpful to you. An equation of the form acosθ+bsinθ=c has two solutions given by θ=tan−1ca2+b2−c2√−tan−1ab
+    The dimensions of the robot are given by the workspace variables a1 and a2.
+    The coordinates of a point P1 in the robot's planar workspace is given by the workspace variable P1. Determine the corresponding joint coordinates required to reach this point and store these in the workspace variable q as a 2-element row vector.
+    The robot's prismatic joint has a limited range given by the workspace variables q2_min and q2_max which denote respectively the minimum and maximum value of q2.
+    A number of points are described by columns of the workspace variable Points. Create a logical row vector with the same number of columns as Points whose elements are true if the corresponding point can be reached by the robot. Save this vector in the workspace variable reachable.
+
+Note that the image shows the robot arm with q1=0 and this angle is measured in the counter clockwise direction.
